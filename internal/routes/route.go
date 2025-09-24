@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/nsantiago2719/prxy/internal/handlers"
 )
@@ -28,7 +29,8 @@ func makeHandler(f handlerFunc) http.HandlerFunc {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(err)
-			slog.Error(err.Message)
+			logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+			logger.Error(err.Message)
 		}
 	}
 }

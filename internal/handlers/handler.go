@@ -6,6 +6,7 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
+	"os"
 
 	"github.com/nsantiago2719/prxy/internal/plugins"
 	"github.com/nsantiago2719/prxy/internal/requests"
@@ -17,6 +18,7 @@ import (
 // this  optional custom headers will be added to the request
 func RootHandler(w http.ResponseWriter, r *http.Request) error {
 	request := requests.Init()
+	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 
 	// Check if the required headers are present
 	if r.Header.Get("x-prxy-url") == "" {
@@ -26,6 +28,8 @@ func RootHandler(w http.ResponseWriter, r *http.Request) error {
 	if r.Header.Get("x-prxy-method") == "" {
 		return errors.New("x-prxy-method header is required")
 	}
+
+	logger.Info("Request received", "method", r.Header.Get("x-prxy-method"), "url", r.Header.Get("x-prxy-url"))
 
 	// Set the method and url from the headers
 	// this will be used on sending the request to the backend service
