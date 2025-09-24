@@ -2,7 +2,6 @@
 package handler
 
 import (
-	"fmt"
 	"log/slog"
 	"net/http"
 

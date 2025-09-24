@@ -6,6 +6,7 @@ import (
 	"github.com/nsantiago2719/prxy/internal/requests"
 )
 
+// Init initializes the plugins available for the prxy
 func Init(request *requests.Request, header http.Header) error {
 	err := setHeader(request, header)
 

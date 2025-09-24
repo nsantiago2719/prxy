@@ -12,6 +12,9 @@ func setHeader(request *requests.Request, header http.Header) error {
 	}
 
 	customHeaders := http.Header{}
+	// x-prxy-request-id is an optional custom header
+	// which is added to the request and will be used by the backend  service
+	// to identify the request from frontend
 	if hasValue(header.Get("x-prxy-request-id")) {
 		customHeaders.Set("x-prxy-request-id", header.Get("x-prxy-request-id"))
 	}
