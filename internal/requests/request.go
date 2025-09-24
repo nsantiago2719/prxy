@@ -18,6 +18,23 @@ func Init() Request {
 	}
 }
 
+// Send sends the request to the backend service
+// depending on the method set in the request
+func (r *Request) Send() (*http.Response, error) {
+	switch r.Method {
+	case "GET":
+		resp, err := Get(r.URL, r.Header)
+		if err != nil {
+			return nil, err
+		}
+		defer resp.Body.Close()
+
+		return resp, nil
+	default:
+		return nil, nil
+	}
+}
+
 func (r *Request) SetMethod(m string) {
 	r.Method = m
 }
