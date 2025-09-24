@@ -1,10 +1,13 @@
 package plugins
 
 import (
-	"fmt"
 	"net/http"
+
+	"github.com/nsantiago2719/prxy/internal/requests"
 )
 
-func Init(Header http.Header) {
-	setCustomHeader(Header)
+func Init(request *requests.Request, header http.Header) error {
+	err := setHeader(request, header)
+
+	return err
 }
