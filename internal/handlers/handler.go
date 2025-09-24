@@ -3,7 +3,7 @@ package handler
 
 import (
 	"errors"
-	"fmt"
+	"io"
 	"log/slog"
 	"net/http"
 
@@ -20,12 +20,10 @@ func RootHandler(w http.ResponseWriter, r *http.Request) error {
 
 	// Check if the required headers are present
 	if r.Header.Get("x-prxy-url") == "" {
-		slog.Error("x-prxy-url header is required")
 		return errors.New("x-prxy-url header is required")
 	}
 
 	if r.Header.Get("x-prxy-method") == "" {
-		slog.Error("x-prxy-method header is required")
 		return errors.New("x-prxy-method header is required")
 	}
 
@@ -42,6 +40,13 @@ func RootHandler(w http.ResponseWriter, r *http.Request) error {
 		return err
 	}
 
-	fmt.Println(resp)
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(resp.StatusCode)
+	io.Copy(w, resp.Body)
+	if err != nil {
+		return err
+	}
+	defer resp.Body.Close()
+
 	return nil
 }

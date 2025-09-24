@@ -27,8 +27,6 @@ func (r *Request) Send() (*http.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		defer resp.Body.Close()
-
 		return resp, nil
 	default:
 		return nil, nil
