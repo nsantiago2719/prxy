@@ -29,7 +29,7 @@ func RootHandler(w http.ResponseWriter, r *http.Request) error {
 		return errors.New("x-prxy-method header is required")
 	}
 
-	logger.Info("Request received", "method", r.Header.Get("x-prxy-method"), "url", r.Header.Get("x-prxy-url"))
+	logger.Info("Request received", "x-prxy-method", r.Header.Get("x-prxy-method"), "x-prxy-url", r.Header.Get("x-prxy-url"))
 
 	// Set the method and url from the headers
 	// this will be used on sending the request to the backend service
@@ -52,5 +52,15 @@ func RootHandler(w http.ResponseWriter, r *http.Request) error {
 	}
 	defer resp.Body.Close()
 
+	return nil
+}
+
+// HealthHandler returns a simple health check message
+func HealthHandler(w http.ResponseWriter, r *http.Request) error {
+	w.WriteHeader(http.StatusOK)
+	_, err := w.Write([]byte("OK"))
+	if err != nil {
+		return err
+	}
 	return nil
 }

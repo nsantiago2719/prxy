@@ -19,6 +19,8 @@ type Error struct {
 
 func makeHandler(f handlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
+		logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+		logger.Info("", "method", r.Method, "url", r.URL.Path)
 		// Call the handler function
 		if err := f(w, r); err != nil {
 			// Log the error and return the error
@@ -29,7 +31,6 @@ func makeHandler(f handlerFunc) http.HandlerFunc {
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(err)
-			logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
 			logger.Error(err.Message)
 		}
 	}
@@ -39,6 +40,7 @@ func makeHandler(f handlerFunc) http.HandlerFunc {
 func NewRoutes() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("/", makeHandler(handler.RootHandler))
+	mux.HandleFunc("/health", makeHandler(handler.HealthHandler))
 
 	return mux
 }
