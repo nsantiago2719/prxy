@@ -18,24 +18,13 @@ import (
 // Optional custom headers should have a prefix of x-prxy-
 // this  optional custom headers will be added to the request
 func RootHandler(w http.ResponseWriter, r *http.Request) error {
-	logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-	logger.Info("Request received", "x-prxy-method", r.Header.Get("x-prxy-method"), "x-prxy-url", r.Header.Get("x-prxy-url"))
-
-	request := requests.Init()
-
 	// Check if the required headers are present
 	if r.Header.Get("x-prxy-url") == "" {
 		return errors.New("x-prxy-url header is required")
 	}
 
-	if r.Header.Get("x-prxy-method") == "" {
-		return errors.New("x-prxy-method header is required")
-	}
-
-	// Set the method and url from the headers
-	// this will be used on sending the request to the backend service
-	request.SetMethod(r.Header.Get("x-prxy-method"))
-	request.SetURL(r.Header.Get("x-prxy-url"))
+	// Set initial request values
+	request := requests.Init(r.Method, r.Header.Get("x-prxy-url"))
 
 	err := plugins.Init(&request, r.Header)
 

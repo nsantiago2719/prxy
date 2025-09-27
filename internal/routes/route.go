@@ -12,6 +12,7 @@ import (
 
 type handlerFunc func(http.ResponseWriter, *http.Request) error
 
+// Error is a struct for general error responses
 type Error struct {
 	Code    int    `json:"code"`
 	Message string `json:"message"`
@@ -20,7 +21,7 @@ type Error struct {
 func makeHandler(f handlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
 		logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
-		logger.Info("", "method", r.Method, "url", r.URL.Path)
+		logger.Info("Request", "method", r.Method, "url", r.URL.Path, "x-prxy-url", r.Header.Get("x-prxy-url"))
 		// Call the handler function
 		if err := f(w, r); err != nil {
 			// Log the error and return the error

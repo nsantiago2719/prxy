@@ -11,7 +11,7 @@ type Request struct {
 	Header http.Header
 }
 
-func Init() Request {
+func Init(method string, url string) Request {
 	return Request{
 		Method: "",
 		URL:    "",
@@ -34,14 +34,6 @@ func (r *Request) Send() (*http.Response, error) {
 		err := errors.New("Method is not supported")
 		return nil, err
 	}
-}
-
-func (r *Request) SetMethod(m string) {
-	r.Method = m
-}
-
-func (r *Request) SetURL(u string) {
-	r.URL = u
 }
 
 func (r *Request) SetHeader(h http.Header) {
