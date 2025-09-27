@@ -1,4 +1,5 @@
 bin/prxy
+bin/test_server
 
 .envrc
 .env
