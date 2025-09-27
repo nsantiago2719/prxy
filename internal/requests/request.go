@@ -1,6 +1,7 @@
 package requests
 
 import (
+	"errors"
 	"net/http"
 )
 
@@ -28,8 +29,10 @@ func (r *Request) Send() (*http.Response, error) {
 			return nil, err
 		}
 		return resp, nil
+	// TODO: add other methods here
 	default:
-		return nil, nil
+		err := errors.New("Method is not supported")
+		return nil, err
 	}
 }
 
