@@ -2,6 +2,7 @@
 package handler
 
 import (
+	"encoding/json"
 	"errors"
 	"io"
 	"log/slog"
@@ -55,10 +56,25 @@ func RootHandler(w http.ResponseWriter, r *http.Request) error {
 	return nil
 }
 
+// HealthResponse is a health check response struct
+type HealthResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
 // HealthHandler returns a simple health check message
 func HealthHandler(w http.ResponseWriter, _ *http.Request) error {
 	w.WriteHeader(http.StatusOK)
-	_, err := w.Write([]byte("OK"))
+	w.Header().Set("Content-Type", "application/json")
+	healthResponse := HealthResponse{
+		Status:  "OK",
+		Message: "Health check",
+	}
+	jsonResponse, err := json.Marshal(healthResponse)
+	if err != nil {
+		return err
+	}
+	_, err = w.Write([]byte(jsonResponse))
 	if err != nil {
 		return err
 	}
