@@ -12,30 +12,8 @@ import (
 	"github.com/nsantiago2719/prxy/internal/routes"
 )
 
-// Response is a simple response struct for testing
-type Response struct {
-	PrxyID string `json:"prxy-id"`
-}
-
-type handlerFunc func(http.ResponseWriter, *http.Request) error
-
-func makeHandler(f handlerFunc) http.HandlerFunc {
-	return func(w http.ResponseWriter, r *http.Request) {
-		// Call the handler function
-		if err := f(w, r); err != nil {
-			// Log the error and return the error
-			err := routes.Error{
-				Code:    http.StatusInternalServerError,
-				Message: err.Error(),
-			}
-			w.Header().Set("Content-Type", "application/json")
-			w.WriteHeader(http.StatusInternalServerError)
-			json.NewEncoder(w).Encode(err)
-		}
-	}
-}
-
 func TestRootHandler(t *testing.T) {
+	// TODO: add more tests
 	tests := []struct {
 		name       string
 		method     string
@@ -120,5 +98,28 @@ func TestRootHandler(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+// Response is a simple response struct for testing
+type Response struct {
+	PrxyID string `json:"prxy-id"`
+}
+
+type handlerFunc func(http.ResponseWriter, *http.Request) error
+
+func makeHandler(f handlerFunc) http.HandlerFunc {
+	return func(w http.ResponseWriter, r *http.Request) {
+		// Call the handler function
+		if err := f(w, r); err != nil {
+			// Log the error and return the error
+			err := routes.Error{
+				Code:    http.StatusInternalServerError,
+				Message: err.Error(),
+			}
+			w.Header().Set("Content-Type", "application/json")
+			w.WriteHeader(http.StatusInternalServerError)
+			json.NewEncoder(w).Encode(err)
+		}
 	}
 }
