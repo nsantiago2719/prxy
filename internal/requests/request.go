@@ -13,8 +13,8 @@ type Request struct {
 
 func Init(method string, url string) Request {
 	return Request{
-		Method: "",
-		URL:    "",
+		Method: method,
+		URL:    url,
 		Header: http.Header{},
 	}
 }
