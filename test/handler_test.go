@@ -80,7 +80,6 @@ func TestRootHandler(t *testing.T) {
 				t.Errorf("Error: %v", err)
 			}
 			var response Response
-			fmt.Println(string(body))
 			err = json.Unmarshal(body, &response)
 			if err != nil {
 				t.Errorf("Error: %v", err)
@@ -96,6 +95,55 @@ func TestRootHandler(t *testing.T) {
 				if response.PrxyID != tt.wantPrxyID {
 					t.Errorf("Error: prxy-id is not empty")
 				}
+			}
+		})
+	}
+}
+
+type HealthResponse struct {
+	Status  string `json:"status"`
+	Message string `json:"message"`
+}
+
+func TestHealthHandler(t *testing.T) {
+	tests := []struct {
+		name       string
+		method     string
+		wantStatus string
+	}{
+		{
+			name:       "TestHealthHandler_Success",
+			method:     http.MethodGet,
+			wantStatus: "OK",
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			req := httptest.NewRequest(tt.method, "/health", nil)
+
+			rr := httptest.NewRecorder()
+
+			handler := http.HandlerFunc(makeHandler(handler.HealthHandler))
+
+			handler.ServeHTTP(rr, req)
+
+			body, err := io.ReadAll(rr.Body)
+			if err != nil {
+				t.Errorf("Error: %v", err)
+			}
+
+			handler.ServeHTTP(rr, req)
+			body, err = io.ReadAll(rr.Body)
+
+			var response HealthResponse
+			err = json.Unmarshal(body, &response)
+			if err != nil {
+				t.Errorf("Error: %v", err)
+			}
+
+			if response.Status != tt.wantStatus {
+				t.Errorf("Error: prxy-id is not equal to %s", tt.wantStatus)
 			}
 		})
 	}
