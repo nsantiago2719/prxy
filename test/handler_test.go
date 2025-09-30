@@ -23,7 +23,7 @@ func TestRootHandler(t *testing.T) {
 		wantErr    bool
 	}{
 		{
-			name:       "TestRootHandler_Success",
+			name:       "TestRootHandler_GetSuccess",
 			method:     http.MethodGet,
 			prxyID:     "123123123",
 			status:     http.StatusOK,
@@ -37,6 +37,14 @@ func TestRootHandler(t *testing.T) {
 			status:     http.StatusOK,
 			wantPrxyID: "",
 			wantErr:    true,
+		},
+		{
+			name:       "TestRootHandler_PostSuccess",
+			method:     http.MethodPost,
+			prxyID:     "123123123",
+			status:     http.StatusOK,
+			wantPrxyID: "123123123",
+			wantErr:    false,
 		},
 	}
 
