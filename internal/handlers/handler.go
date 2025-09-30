@@ -7,7 +7,6 @@ import (
 	"io"
 	"log/slog"
 	"net/http"
-	"os"
 
 	"github.com/nsantiago2719/prxy/internal/plugins"
 	"github.com/nsantiago2719/prxy/internal/requests"
