@@ -48,7 +48,7 @@ func TestRootHandler(t *testing.T) {
 		},
 	}
 
-	// backend test server
+	// Create a mock service handler
 	mockServiceHandler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		prxyID := r.Header.Get("x-prxy-request-id")
 		response := Response{
@@ -63,6 +63,8 @@ func TestRootHandler(t *testing.T) {
 		w.Write([]byte(jsonResponse))
 		w.Header().Set("x-prxy-request-id", prxyID)
 	})
+
+	// Create the backend test server
 	testServer := httptest.NewServer(mockServiceHandler)
 	defer testServer.Close()
 
@@ -95,13 +97,13 @@ func TestRootHandler(t *testing.T) {
 
 			if !tt.wantErr {
 				if response.PrxyID != tt.wantPrxyID {
-					t.Errorf("Error: prxy-id is not equal to %s", tt.wantPrxyID)
+					assertMessage(t, response.PrxyID, tt.wantPrxyID)
 				}
 			}
 
 			if tt.wantErr {
 				if response.PrxyID != tt.wantPrxyID {
-					t.Errorf("Error: prxy-id is not empty")
+					assertMessage(t, response.PrxyID, tt.wantPrxyID)
 				}
 			}
 		})
@@ -151,7 +153,7 @@ func TestHealthHandler(t *testing.T) {
 			}
 
 			if response.Status != tt.wantStatus {
-				t.Errorf("Error: prxy-id is not equal to %s", tt.wantStatus)
+				assertMessage(t, response.Status, tt.wantStatus)
 			}
 		})
 	}
@@ -177,5 +179,12 @@ func makeHandler(f handlerFunc) http.HandlerFunc {
 			w.WriteHeader(http.StatusInternalServerError)
 			json.NewEncoder(w).Encode(err)
 		}
+	}
+}
+
+func assertMessage(t *testing.T, got, want string) {
+	t.Helper()
+	if got != want {
+		t.Errorf("got: %s, want: %s", got, want)
 	}
 }
