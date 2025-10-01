@@ -3,11 +3,10 @@ package routes
 
 import (
 	"encoding/json"
-	"log/slog"
 	"net/http"
-	"os"
 
 	"github.com/nsantiago2719/prxy/internal/handlers"
+	"github.com/nsantiago2719/prxy/internal/loggers"
 )
 
 type handlerFunc func(http.ResponseWriter, *http.Request) error
@@ -20,8 +19,10 @@ type Error struct {
 
 func makeHandler(f handlerFunc) http.HandlerFunc {
 	return func(w http.ResponseWriter, r *http.Request) {
-		logger := slog.New(slog.NewTextHandler(os.Stdout, nil))
+		// Log the request for Info
+		logger := loggers.NewLogger()
 		logger.Info("Request", "method", r.Method, "url", r.URL.Path, "x-prxy-url", r.Header.Get("x-prxy-url"))
+
 		// Call the handler function
 		if err := f(w, r); err != nil {
 			// Log the error and return the error
